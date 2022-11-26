@@ -1,40 +1,50 @@
-import { useState } from 'react';
+import queryString from 'query-string';
+import { useEffect, useState } from 'react';
 import './App.scss';
-import TodoForm from './components/TodoForm';
-import TodoList from './components/TodoList';
+import Pagination from './components/Pagination';
+import PostList from './components/PostList';
 
 function App() {
-  const [todoList, setTodoList] = useState([
-    { id: 1, title: 'I love Easy Frontend! 😍 ' },
-    { id: 2, title: 'We love Easy Frontend! 🥰 ' },
-    { id: 3, title: 'They love Easy Frontend! 🚀 ' },
-  ]);
+  const [postList, setPostList] = useState([]);
+  const [pagination, setPagination] = useState({
+    _page: 1,
+    _limit: 10,
+    _totalRows: 1,
+  });
+  const [filter, setFilter] = useState({
+    _limit: 10,
+    _page: 1,
+  });
 
-  const handleTodoClick = (todo) => {
-    const index = todoList.findIndex((x) => x.id === todo.id);
-    if (index < 0) return;
+  useEffect(() => {
+    async function fetchPostList() {
+      try {
+        const paramsString = queryString.stringify(filter);
+        const requestUrl = `http://js-post-api.herokuapp.com/api/posts?${paramsString}`;
+        const response = await fetch(requestUrl);
+        const responseJSON = await response.json();
+        const { data, pagination } = responseJSON;
+        setPostList(data);
+        setPagination(pagination);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    fetchPostList();
+  }, [filter]);
 
-    const newTodoList = [...todoList];
-    newTodoList.splice(index, 1);
-    setTodoList(newTodoList);
-  };
-
-  const handleTodoFormSubmit = (formValues) => {
-    console.log('🚀 ~ formValues', formValues);
-    const newTodo = {
-      id: todoList.length + 1,
-      ...formValues,
-    };
-    const newTodoList = [...todoList];
-    newTodoList.push(newTodo);
-    setTodoList(newTodoList);
+  const handlePageChange = (newPage) => {
+    setFilter({
+      ...filter,
+      _page: newPage,
+    });
   };
 
   return (
     <div className="app">
-      <h1>Welcom Su Leng</h1>
-      <TodoForm onSubmit={handleTodoFormSubmit} />
-      <TodoList todos={todoList} onTodoClick={handleTodoClick} />
+      <h1>Welcom Post List</h1>
+      <PostList posts={postList} />
+      <Pagination pagination={pagination} onPageChange={handlePageChange} />
     </div>
   );
 }
