@@ -1,7 +1,9 @@
 import queryString from 'query-string';
 import { useEffect, useState } from 'react';
 import './App.scss';
+import Clock from './components/Clock';
 import Pagination from './components/Pagination';
+import PostFiltersForm from './components/PostFiltersForm';
 import PostList from './components/PostList';
 
 function App() {
@@ -15,6 +17,7 @@ function App() {
     _limit: 10,
     _page: 1,
   });
+  const [showClock, setShowClock] = useState(true);
 
   useEffect(() => {
     async function fetchPostList() {
@@ -40,11 +43,22 @@ function App() {
     });
   };
 
+  const handleFilterChange = (newFilter) => {
+    setFilter({
+      ...filter,
+      _page: 1,
+      title_like: newFilter.searchTerm,
+    });
+  };
+
   return (
     <div className="app">
       <h1>Welcom Post List</h1>
+      <PostFiltersForm onSubmit={handleFilterChange} />
       <PostList posts={postList} />
       <Pagination pagination={pagination} onPageChange={handlePageChange} />
+      {showClock && <Clock />}
+      <button onClick={() => setShowClock(false)}>Show Clock</button>
     </div>
   );
 }
