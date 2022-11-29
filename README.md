@@ -1,4 +1,4 @@
-# Getting Started with Create React App Su Leng Deployment
+# Getting Started with Create React App Su Leng DEV
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
