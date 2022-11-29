@@ -1,7 +1,9 @@
 import queryString from 'query-string';
 import { useEffect, useState } from 'react';
 import './App.scss';
+import BetterClock from './components/BetterClock';
 import Clock from './components/Clock';
+import MagicBox from './components/MagicBox';
 import Pagination from './components/Pagination';
 import PostFiltersForm from './components/PostFiltersForm';
 import PostList from './components/PostList';
@@ -54,10 +56,12 @@ function App() {
   return (
     <div className="app">
       <h1>Welcom Post List</h1>
+      <MagicBox />
       <PostFiltersForm onSubmit={handleFilterChange} />
       <PostList posts={postList} />
       <Pagination pagination={pagination} onPageChange={handlePageChange} />
       {showClock && <Clock />}
+      <BetterClock />
       <button onClick={() => setShowClock(false)}>Show Clock</button>
     </div>
   );
